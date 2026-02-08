@@ -13,7 +13,8 @@ def on_webapp_data(message: Message):
 
     tokens = data.get('access_token')
     if not tokens:
-        bot.send_message(message.chat.id, 'Не пришёл access_token')
+        bot.send_message(message.chat.id, f'Не пришёл access_token\n Пришло: {message.web_app_data.data}')
+
         return
 
     upsert_token(message.from_user.id, tokens)

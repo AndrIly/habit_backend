@@ -31,22 +31,38 @@ def webapp():
   <h3>Авторизация...</h3>
 
   <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
+  const tg = window.Telegram.WebApp;
+  tg.ready();
 
+  const initData = tg.initData;             // строка с hash=...
+  const initDataUnsafe = tg.initDataUnsafe; // объект (для отладки)
+
+  // покажем на странице, что реально есть
+  document.body.innerHTML += "<pre>initData length: " + (initData ? initData.length : 0) + "</pre>";
+  document.body.innerHTML += "<pre>initData: " + (initData || "(empty)") + "</pre>";
+  document.body.innerHTML += "<pre>initDataUnsafe: " + JSON.stringify(initDataUnsafe) + "</pre>";
+
+  if (!initData || initData.length === 0) {
+    document.body.innerText = "initData пустой. Открой WebApp ИЗ Telegram (через кнопку в боте).";
+  } else {
     fetch("/auth/telegram-webapp", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ init_data: tg.initData })
+      body: JSON.stringify({ init_data: initData })
     })
-    .then(r => r.json())
-    .then(data => {
+    .then(async r => {
+      const data = await r.json();
+      if (!r.ok) {
+        document.body.innerText = "Ошибка авторизации: " + JSON.stringify(data);
+        return;
+      }
       tg.sendData(JSON.stringify(data));
       tg.close();
     })
     .catch(err => {
       document.body.innerText = "Ошибка авторизации: " + err;
     });
+  }
 </script>
 </body>
 </html>
@@ -61,18 +77,18 @@ def auth_telegram_webapp(payload: Dict = Body(...)):
     :param payload:
     :return: session_id
     """
-    init_data = payload.get('initData')
+    init_data = payload.get('init_data')
+    print("PAYLOAD:", payload)
     if not init_data:
         raise HTTPException(status_code=400, detail='initData is required')
 
     try:
         parsed = verify_telegram_init_data(init_data, BOT_TOKEN)
+        user = json.loads(parsed['user'])
+        tg_user_id = int(user['id'])
+        access_token = create_access_token(tg_user_id)
     except Exception:
         raise HTTPException(status_code=401, detail='Invalid Telegram InitData')
-
-    user = json.loads(parsed['user'])
-    tg_user_id = int(user['id'])
-    access_token = create_access_token(tg_user_id)
     return {'access_token': access_token, 'token_type': 'bearer'}
 
 
