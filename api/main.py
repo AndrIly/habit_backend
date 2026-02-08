@@ -31,23 +31,33 @@ def webapp():
   <h3>Авторизация...</h3>
 
   <script>
-  const tg = window.Telegram.WebApp;
-  tg.ready();
+    const tg = window.Telegram.WebApp;
+    tg.ready();
 
-   fetch("/auth/telegram-webapp", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ init_data: tg.initData })
-    })
-    .then(r => r.json())
-    .then(data => {
-      tg.sendData(JSON.stringify(data));
-      tg.close();
-    })
-    .catch(err => {
-      document.body.innerText = "Ошибка авторизации: " + err;
-    });
-</script>
+    const initData = tg.initData;
+
+    if (!initData || initData.length === 0) {
+      document.body.innerText = "initData пустой. Открой мини-приложение через WebApp кнопку/меню.";
+    } else {
+      fetch("https://habit-backend-awul.onrender.com/auth/telegram-webapp", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ init_data: initData })
+      })
+      .then(async r => {
+        const data = await r.json();
+        if (!r.ok) {
+          document.body.innerText = "Ошибка авторизации: " + JSON.stringify(data);
+          return;
+        }
+        tg.sendData(JSON.stringify(data));
+        tg.close();
+      })
+      .catch(err => {
+        document.body.innerText = "Ошибка авторизации: " + err;
+      });
+    }
+  </script>
 </body>
 </html>
 """
