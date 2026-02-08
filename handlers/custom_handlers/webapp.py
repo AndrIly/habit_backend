@@ -5,8 +5,6 @@ from keyboards.reply.button_reply import main_menu
 from loader import bot
 
 
-
-
 @bot.message_handler(content_types=["web_app_data"])
 def on_webapp_data(message: Message):
     data = json.loads(message.web_app_data.data)
