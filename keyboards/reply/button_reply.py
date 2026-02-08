@@ -1,49 +1,12 @@
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 
+today_btn = '✅Сегодня✅'
+habits_btn = '📋Привычки📋'
+add_btn = '➕Добавить➕'
+reminder_btn = '🔔Уведомление🔔'
 
-def menu_button():
-    button = KeyboardButton('Главное меню🚪')
-    keyboard = ReplyKeyboardMarkup()
-    keyboard.add(button)
-    return keyboard
-
-
-def choice_in_main():
-    button_1 = KeyboardButton('⚙️️')
-    button_2 = KeyboardButton('✅')
-    button_3 = KeyboardButton('🔔')
-
-    keyboard = ReplyKeyboardMarkup()
-    keyboard.add(button_1, button_2, button_3)
-    return keyboard
-
-
-def setting_reply():
-    button_1 = KeyboardButton('✍️')
-    button_2 = KeyboardButton('🗑️')
-    button_3 = KeyboardButton('📝')
-    button_4 = KeyboardButton('🚪 - Назад в главное меню')
-
-    keyboard = ReplyKeyboardMarkup()
-    keyboard.add(button_1, button_2, button_3, button_4)
-    return keyboard
-
-
-def done_reply():
-    button_1 = KeyboardButton('📋')
-    button_2 = KeyboardButton('☑️')
-    button_3 = KeyboardButton('❎')
-    button_4 = KeyboardButton('🚪 - Назад в главное меню')
-    keyboard = ReplyKeyboardMarkup()
-    keyboard.add(button_1, button_2, button_3, button_4)
-    return keyboard
-
-
-def notification_reply():
-    button_1 = KeyboardButton('📋🔔')
-    button_2 = KeyboardButton('⚙️🔔️')
-    button_3 = KeyboardButton('🔕')
-    button_4 = KeyboardButton('🚪 - Назад в главное меню')
-    keyboard = ReplyKeyboardMarkup()
-    keyboard.add(button_1, button_2, button_3, button_4)
+def main_menu():
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.row(KeyboardButton(habits_btn), KeyboardButton(today_btn))
+    keyboard.row(KeyboardButton(add_btn), KeyboardButton(reminder_btn))
     return keyboard

@@ -2,3 +2,5 @@ pyTelegramBotAPI==4.30.0
 python-dotenv== 1.2.1
 fastapi == 0.128.0
 uvicorn == 0.40.0
+schedule == 1.2.2
+PyJWT == 2.11.0

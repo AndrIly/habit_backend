@@ -1,8 +1,9 @@
-from fastapi import FastAPI, Body
+import json
+from fastapi import FastAPI, Body, HTTPException, Depends
 from starlette.responses import HTMLResponse
-import uuid
 from typing import Dict
-
+from config_data.api_config import verify_telegram_init_data, create_access_token, get_current_user_id
+from config_data.config import BOT_TOKEN
 
 app = FastAPI()
 
@@ -60,5 +61,22 @@ def auth_telegram_webapp(payload: Dict = Body(...)):
     :param payload:
     :return: session_id
     """
-    return {"session_id": str(uuid.uuid4())}
+    init_data = payload.get('initData')
+    if not init_data:
+        raise HTTPException(status_code=400, detail='initData is required')
+
+    try:
+        parsed = verify_telegram_init_data(init_data, BOT_TOKEN)
+    except Exception:
+        raise HTTPException(status_code=401, detail='Invalid Telegram InitData')
+
+    user = json.loads(parsed['user'])
+    tg_user_id = int(user['id'])
+    access_token = create_access_token(tg_user_id)
+    return {'access_token': access_token, 'token_type': 'bearer'}
+
+
+@app.get('/me')
+def me(user_id: int = Depends(get_current_user_id)):
+    return {'user_id': user_id}
 
