@@ -19,7 +19,10 @@ def verify_telegram_init_data(init_data: str, bot_token: str) -> dict:
         raise Exception('Нет хэша в initData')
 
     data_check_string = '\n'.join(f'{k}={v}' for k, v in sorted(data.items()))
-    secret_key = hmac.new(b'WebAppData', bot_token.encode(), hashlib.sha256).digest()
+    secret_key = hmac.new(
+        key= bot_token.encode(),
+        msg= b"WebAppData",
+        digestmod=hashlib.sha256).digest()
     calculated_hash = hmac.new(secret_key,
                                data_check_string.encode(),
                                hashlib.sha256).hexdigest()
