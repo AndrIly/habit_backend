@@ -1,19 +1,17 @@
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from telebot.types import Message
 from loader import bot
-from keyboards.reply.webapp_reply import auth_reply
 
+WEBAPP_URL = "https://habit-backend-awul.onrender.com/webapp"
 
+def auth_inline():
+    kb = InlineKeyboardMarkup()
+    kb.add(InlineKeyboardButton("🔐 Войти", web_app=WebAppInfo(url=WEBAPP_URL)))
+    return kb
 
 @bot.message_handler(commands=["start"])
-def bot_start(message: Message):
-    bot.send_message(message.chat.id, f"Привет, {message.from_user.full_name}!"
-                         f"\nЭтот бот предназначен для трекинга привычек.🤖"
-                         f"\n\tОсновные функции бота:"
-                         f"\n\t• Добавление, редактирование и удаление привычек.✍️"
-                         f"\n\t• Фиксация выполнения привычек.☑️"
-                         f"\n\t• Регулярное оповещение для соблюдение привычек.🔔"
-                         f"\n\nТеперь когда ты изучил предназначение бота нажимай на кнопку войти👇",
-                     reply_markup=auth_reply())
+def start(message: Message):
+    bot.send_message(message.chat.id, "Нажми кнопку для авторизации:", reply_markup=auth_inline())
 
 
 
