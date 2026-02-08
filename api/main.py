@@ -71,17 +71,20 @@ def auth_telegram_webapp(payload: Dict = Body(...)):
     :param payload:
     :return: session_id
     """
+
     init_data = payload.get('init_data')
-    print("PAYLOAD:", payload)
     if not init_data:
         raise HTTPException(status_code=400, detail='initData is required')
 
     try:
         parsed = verify_telegram_init_data(init_data, BOT_TOKEN)
+        print('Verify ok')
         user = json.loads(parsed['user'])
         tg_user_id = int(user['id'])
         access_token = create_access_token(tg_user_id)
-    except Exception:
+        print('Token ok')
+    except Exception as e:
+        print('auth error:', repr(e))
         raise HTTPException(status_code=401, detail='Invalid Telegram InitData')
     return {'access_token': access_token, 'token_type': 'bearer'}
 

@@ -9,26 +9,21 @@ import jwt
 
 bearer = HTTPBearer(auto_error=False)
 
+
 def verify_telegram_init_data(init_data: str, bot_token: str) -> dict:
-    if not bot_token:
-        raise Exception('Бот токен не указан')
-
     data = dict(parse_qsl(init_data, keep_blank_values=True))
-    received_hash = data.pop('hash', None)
+    received_hash = data.pop("hash", None)
     if not received_hash:
-        raise Exception('Нет хэша в initData')
+        raise Exception("Нет хэша в initData")
 
-    data_check_string = '\n'.join(f'{k}={v}' for k, v in sorted(data.items()))
-    secret_key = hmac.new(
-        key= bot_token.encode(),
-        msg= b"WebAppData",
-        digestmod=hashlib.sha256).digest()
-    calculated_hash = hmac.new(secret_key,
-                               data_check_string.encode(),
-                               hashlib.sha256).hexdigest()
+    data_check_string = "\n".join(f"{k}={v}" for k, v in sorted(data.items()))
+
+    secret_key = hashlib.sha256(bot_token.encode()).digest()
+    calculated_hash = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256).hexdigest()
 
     if not hmac.compare_digest(calculated_hash, received_hash):
-        raise Exception('Недействительный initData хэш')
+        raise Exception("Недействительный initData хэш")
+
     return data
 
 
@@ -38,7 +33,7 @@ def create_access_token(tg_user_id: int) -> str:
     payload = {
         'sub': str(tg_user_id),
         'iat': int(now.timestamp()),
-        'exp': int(exp).timestamp(),
+        'exp': int(exp.timestamp()),
     }
     return jwt.encode(
         payload,
