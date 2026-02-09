@@ -102,10 +102,9 @@ def auth_telegram_webapp(payload: Dict = Body(...)):
     upsert_token(tg_user_id, access_token)
     print('Me her')
     notify_user(tg_user_id, "✅ Авторизация прошла успешно ✅\nВернись в бот и нажми «Меню» или /start")
-    return {"ok": True}
+    return {"ok": True, "access_token": access_token, "token_type": "bearer"}
 
 
 @app.get('/me')
 def me(user_id: int = Depends(get_current_user_id)):
     return {'user_id': user_id}
-
