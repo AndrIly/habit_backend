@@ -41,10 +41,21 @@ def webapp():
     const tg = window.Telegram.WebApp;
     tg.ready();
 
-    const initData = tg.initData;
+    function readInitDataFromUrl() {
+      const href = window.location.href || "";
+      const match = href.match(/[?&#]tgWebAppData=([^&]+)/);
+      if (!match || !match[1]) return "";
+      try {
+        return decodeURIComponent(match[1]);
+      } catch (_) {
+        return match[1];
+      }
+    }
+
+    const initData = tg.initData || readInitDataFromUrl();
 
     if (!initData || initData.length === 0) {
-      document.body.innerText = "initData пустой. Открой мини-приложение через WebApp кнопку/меню.";
+      document.body.innerText = "initData пустой. Открой мини-приложение кнопкой «🔐 Войти» в личном чате с ботом и обнови Telegram до последней версии.";
     } else {
       (async () => {
         try {
