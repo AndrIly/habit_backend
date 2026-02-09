@@ -100,8 +100,8 @@ def auth_telegram_webapp(payload: Dict = Body(...)):
         raise HTTPException(status_code=401, detail='Invalid Telegram InitData')
 
     upsert_token(tg_user_id, access_token)
+    print('Me her')
     notify_user(tg_user_id, "✅ Авторизация прошла успешно ✅\nВернись в бот и нажми «Меню» или /start")
-
     return {"ok": True}
 
 

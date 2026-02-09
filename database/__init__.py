@@ -5,3 +5,4 @@ from . import users
 from . import habits
 from . import logs
 from . import tokens
+from . import notify_user

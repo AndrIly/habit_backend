@@ -62,3 +62,4 @@ def get_current_user_id(creds: HTTPAuthorizationCredentials = Depends(bearer)):
         return int(payload['sub'])
     except Exception:
         raise HTTPException(status_code=401, detail='Invalid token')
+

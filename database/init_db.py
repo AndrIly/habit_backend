@@ -24,9 +24,10 @@ def init_db():
     """)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS tokens (
-        tg_user_id INTEGER PRIMARY KEY,
-        access_token TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP);
+      tg_user_id INTEGER PRIMARY KEY,
+      access_token TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
     """)
 
     cursor.execute("""
