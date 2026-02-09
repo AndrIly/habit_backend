@@ -51,7 +51,7 @@ def webapp():
           return;
         }
         tg.sendData(JSON.stringify(data));
-        setTimeout(() => tg.close(), 300);
+        setTimeout(() => tg.close(), 800);
       })
       .catch(err => {
         document.body.innerText = "Ошибка авторизации: " + err;
