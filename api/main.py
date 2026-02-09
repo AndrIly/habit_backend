@@ -5,8 +5,14 @@ from typing import Dict
 from config_data.api_config import verify_telegram_init_data, create_access_token, get_current_user_id
 from config_data.config import BOT_TOKEN
 from database.notify_user import notify_user, upsert_token
+from database.init_db import init_db
 
 app = FastAPI()
+
+
+@app.on_event("startup")
+def on_startup():
+    init_db()
 
 @app.get("/")
 def root():
@@ -40,33 +46,43 @@ def webapp():
     if (!initData || initData.length === 0) {
       document.body.innerText = "initData пустой. Открой мини-приложение через WebApp кнопку/меню.";
     } else {
-      fetch("https://habit-backend-awul.onrender.com/auth/telegram-webapp", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ init_data: initData })
-      })
-      .then(async r => {
-        const data = await r.json();
-        if (!r.ok) {
-          document.body.innerText = "Ошибка авторизации: " + JSON.stringify(data);
-          return;
-        }
-        document.body.innerText = "Отправляю токен в бота...";
+      (async () => {
         try {
-          tg.sendData(JSON.stringify(data));
-        } catch (e) {
-          document.body.innerText = "sendData ERROR: " + (e?.message || e);
-          throw e;
+          const r = await fetch("/auth/telegram-webapp", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ init_data: initData })
+          });
+
+          const raw = await r.text();
+          let data = null;
+          try {
+            data = raw ? JSON.parse(raw) : {};
+          } catch (_) {
+            throw new Error("Невалидный ответ сервера: " + raw.slice(0, 300));
+          }
+
+          if (!r.ok) {
+            document.body.innerText = "Ошибка авторизации: " + JSON.stringify(data);
+            return;
+          }
+
+          document.body.innerText = "Отправляю токен в бота...";
+          try {
+            tg.sendData(JSON.stringify(data));
+          } catch (e) {
+            document.body.innerText = "sendData ERROR: " + (e?.message || e);
+            throw e;
+          }
+
+          setTimeout(() => {
+            document.body.innerText = "Отправлено. Закрываю...";
+            tg.close();
+          }, 1200);
+        } catch (err) {
+          document.body.innerText = "Ошибка авторизации: " + (err?.message || err);
         }
-        
-        setTimeout(() => {
-          document.body.innerText = "Отправлено. Закрываю...";
-          tg.close();
-        }, 1200);
-      })
-      .catch(err => {
-        document.body.innerText = "Ошибка авторизации: " + err;
-      });
+      })();
     }
   </script>
 </body>
