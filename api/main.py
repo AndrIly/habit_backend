@@ -51,7 +51,13 @@ def webapp():
           return;
         }
         document.body.innerText = "Отправляю токен в бота...";
-        tg.sendData(JSON.stringify(data));
+        try {
+          tg.sendData(JSON.stringify(data));
+        } catch (e) {
+          document.body.innerText = "sendData ERROR: " + (e?.message || e);
+          throw e;
+        }
+        
         setTimeout(() => {
           document.body.innerText = "Отправлено. Закрываю...";
           tg.close();
