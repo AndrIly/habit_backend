@@ -4,6 +4,7 @@ from starlette.responses import HTMLResponse
 from typing import Dict
 from config_data.api_config import verify_telegram_init_data, create_access_token, get_current_user_id
 from config_data.config import BOT_TOKEN
+from database.notify_user import notify_user, upsert_token
 
 app = FastAPI()
 
@@ -73,7 +74,6 @@ def webapp():
 """
 
 
-
 @app.post('/auth/telegram-webapp')
 def auth_telegram_webapp(payload: Dict = Body(...)):
     """
@@ -99,7 +99,10 @@ def auth_telegram_webapp(payload: Dict = Body(...)):
         print('auth error:', repr(e))
         raise HTTPException(status_code=401, detail='Invalid Telegram InitData')
 
-    return {'access_token': access_token, 'token_type': 'bearer'}
+    upsert_token(tg_user_id, access_token)
+    notify_user(tg_user_id, "✅ Авторизация прошла успешно ✅\nВернись в бот и нажми «Меню» или /start")
+
+    return {"ok": True}
 
 
 @app.get('/me')
