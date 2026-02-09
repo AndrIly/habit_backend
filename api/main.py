@@ -83,9 +83,11 @@ def auth_telegram_webapp(payload: Dict = Body(...)):
         tg_user_id = int(user['id'])
         access_token = create_access_token(tg_user_id)
         print('Token ok')
+        print({'access_token': access_token, 'token_type': 'bearer'})
     except Exception as e:
         print('auth error:', repr(e))
         raise HTTPException(status_code=401, detail='Invalid Telegram InitData')
+
     return {'access_token': access_token, 'token_type': 'bearer'}
 
 
