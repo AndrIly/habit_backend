@@ -50,8 +50,12 @@ def webapp():
           document.body.innerText = "Ошибка авторизации: " + JSON.stringify(data);
           return;
         }
+        document.body.innerText = "Отправляю токен в бота...";
         tg.sendData(JSON.stringify(data));
-        setTimeout(() => tg.close(), 800);
+        setTimeout(() => {
+          document.body.innerText = "Отправлено. Закрываю...";
+          tg.close();
+        }, 1200);
       })
       .catch(err => {
         document.body.innerText = "Ошибка авторизации: " + err;
@@ -62,33 +66,6 @@ def webapp():
 </html>
 """
 
-@app.get("/webapp-test", response_class=HTMLResponse)
-def webapp_test():
-    return """
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>WebApp Test</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
-<body>
-  <h3>WebApp test</h3>
-
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-
-    tg.sendData(JSON.stringify({
-      test: true,
-      ts: Date.now()
-    }));
-
-    setTimeout(() => tg.close(), 500);
-  </script>
-</body>
-</html>
-"""
 
 
 @app.post('/auth/telegram-webapp')
