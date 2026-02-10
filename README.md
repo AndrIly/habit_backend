@@ -70,13 +70,13 @@ Telegram-бот для трекинга привычек с авторизаци
 
 ### Используемые библиотеки
 
-pyTelegramBotAPI==4.30.0
-python-dotenv== 1.2.1
-fastapi == 0.128.0
-uvicorn == 0.40.0
-schedule == 1.2.2
-PyJWT == 2.11.0
-starlette == 0.50.0
+- pyTelegramBotAPI==4.30.0
+- python-dotenv== 1.2.1
+- fastapi == 0.128.0
+- uvicorn == 0.40.0
+- schedule == 1.2.2
+- PyJWT == 2.11.0
+- starlette == 0.50.0
 
 Полный список зависимостей указан в `requirements.txt`.
 
