@@ -10,7 +10,12 @@ def do_local_auth(message: Message):
     upsert_token(message.from_user.id, token)
     bot.send_message(
         message.chat.id,
-        "✅Авторизация прошла успешно✅",
+        "✅Авторизация прошла успешно✅\n\n"
+        "Главное меню:\n\n"
+        "Привычки - показывает список привычек\n"
+        "Сегодня - Отметить привычку сделанная или нет\n"
+        "Добавить - добавить привычки\n"
+        "Уведомление - настройка уведомлений",
         reply_markup=main_menu()
     )
 
