@@ -35,7 +35,11 @@ def set_reminder(call: CallbackQuery):
     bot.send_message(call.message.chat.id, 'Напиши время для привычки в формате HH:MM')
 
 
-@bot.message_handler(func=lambda message: message.from_user and wait_time.get(message.from_user.id) is not None)
+@bot.message_handler(
+    func=lambda message: message.from_user
+    and wait_time.get(message.from_user.id) is not None
+    and (message.text or '').strip().lower() not in {'🔐 войти', 'войти'}
+)
 def settime_finished(message: Message):
     """
     Настройка времени
@@ -83,4 +87,3 @@ def set_reminder_from_screen(call: CallbackQuery):
     wait_time[call.from_user.id] = habit_id
     bot.answer_callback_query(call.id)
     bot.send_message(call.message.chat.id, 'Напиши время для привычки в формате HH:MM')
-

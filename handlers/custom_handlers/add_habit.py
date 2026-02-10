@@ -13,7 +13,10 @@ def add_start(message: Message):
    bot.send_message(message.chat.id, 'Напиши название привычки')
 
 
-@bot.message_handler(func = lambda message: USER_STATE.get(message.from_user.id) == 'Ждем название привычки')
+@bot.message_handler(
+    func=lambda message: USER_STATE.get(message.from_user.id) == 'Ждем название привычки'
+    and (message.text or '').strip().lower() not in {'🔐 войти', 'войти'}
+)
 def add_finish(message: Message):
     title = (message.text or '').strip()
     if not title:
