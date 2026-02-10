@@ -4,6 +4,7 @@ from threading import Thread
 import schedule
 from loader import bot
 from database.db import get_connection
+from keyboards.inline.reminder_actions import reminder_actions
 
 def send_due_habit_reminder():
     now = t.strftime('%H:%M')
@@ -36,9 +37,11 @@ def send_due_habit_reminder():
         except Exception:
             continue
 
-        bot.send_message(tg_user_id, 'Пора: {title}\n\n Отметить выполненным: /done {habit} \n Статус: /today'.format(
-            title=title, habit=habit_id
-        ))
+        bot.send_message(
+            tg_user_id,
+            'Пора сделать привычку: {title}'.format(title=title),
+            reply_markup=reminder_actions(habit_id)
+        )
     connection.close()
 
 

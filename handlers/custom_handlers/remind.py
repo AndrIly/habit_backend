@@ -4,6 +4,7 @@ from database.habits import set_habit_reminder
 from typing import Dict
 from keyboards.reply.button_reply import reminder_btn
 from keyboards.inline.remind_screen import render_reminder
+from database.logs import mark_done
 
 wait_time: Dict[int, int] = {}
 
@@ -87,3 +88,43 @@ def set_reminder_from_screen(call: CallbackQuery):
     wait_time[call.from_user.id] = habit_id
     bot.answer_callback_query(call.id)
     bot.send_message(call.message.chat.id, 'Напиши время для привычки в формате HH:MM')
+
+
+@bot.callback_query_handler(func=lambda call: call.data and call.data.startswith('rem_done:'))
+def reminder_done(call: CallbackQuery):
+    parts = call.data.split(':', 1)
+    if len(parts) != 2 or not parts[1].strip().isdigit():
+        bot.answer_callback_query(call.id, 'Ошибка данных', show_alert=True)
+        return
+
+    habit_id = int(parts[1].strip())
+    ok = mark_done(tg_user_id=call.from_user.id, habit_id=habit_id)
+    if not ok:
+        bot.answer_callback_query(call.id, 'Привычка не найдена', show_alert=True)
+        return
+
+    old_text = call.message.text or 'Напоминание'
+    new_text = f'✅ Выполнено\n{old_text}'
+    bot.edit_message_text(
+        text=new_text,
+        chat_id=call.message.chat.id,
+        message_id=call.message.message_id
+    )
+    bot.answer_callback_query(call.id, 'Отмечено')
+
+
+@bot.callback_query_handler(func=lambda call: call.data and call.data.startswith('rem_later:'))
+def reminder_later(call: CallbackQuery):
+    parts = call.data.split(':', 1)
+    if len(parts) != 2 or not parts[1].strip().isdigit():
+        bot.answer_callback_query(call.id, 'Ошибка данных', show_alert=True)
+        return
+
+    old_text = call.message.text or 'Напоминание'
+    new_text = f'⏳ Отложено\n{old_text}'
+    bot.edit_message_text(
+        text=new_text,
+        chat_id=call.message.chat.id,
+        message_id=call.message.message_id
+    )
+    bot.answer_callback_query(call.id, 'Ок, напомню позже')
