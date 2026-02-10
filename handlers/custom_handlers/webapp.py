@@ -21,6 +21,12 @@ def auth_from_command(message: Message):
     do_local_auth(message)
 
 
+@bot.callback_query_handler(func=lambda call: call.data == "login_inline")
+def auth_from_inline(call):
+    bot.answer_callback_query(call.id)
+    do_local_auth(call.message)
+
+
 @bot.message_handler(func=lambda m: ((m.text or "").strip().lower() in {"🔐 войти", "войти"}))
 def auth_from_reply_button(message: Message):
     do_local_auth(message)
