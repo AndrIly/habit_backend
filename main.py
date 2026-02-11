@@ -5,14 +5,8 @@ from utils.set_bot_commands import set_default_commands
 from database.init_db import init_db
 from scheduler import start_scheduler
 
-
-#init_db()
+init_db()
 start_scheduler()
-import os
-
-
-
-
 
 if __name__ == "__main__":
    set_default_commands(bot)

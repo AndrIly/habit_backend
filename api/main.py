@@ -5,14 +5,8 @@ from typing import Dict
 from config_data.api_config import verify_telegram_init_data, create_access_token, get_current_user_id
 from config_data.config import BOT_TOKEN
 from database.notify_user import notify_user, upsert_token
-from database.init_db import init_db
 
 app = FastAPI()
-
-
-@app.on_event("startup")
-def on_startup():
-    init_db()
 
 @app.get("/")
 def root():
