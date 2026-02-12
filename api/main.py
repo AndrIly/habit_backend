@@ -5,8 +5,15 @@ from typing import Dict
 from config_data.api_config import verify_telegram_init_data, create_access_token, get_current_user_id
 from config_data.config import BOT_TOKEN
 from database.notify_user import notify_user, upsert_token
+from database.init_db import init_db
 
 app = FastAPI()
+
+
+@app.on_event("startup")
+def on_startup():
+    init_db()
+
 
 @app.get("/")
 def root():
@@ -119,8 +126,18 @@ def auth_telegram_webapp(payload: Dict = Body(...)):
         print('auth error:', repr(e))
         raise HTTPException(status_code=401, detail='Invalid Telegram InitData')
 
-    upsert_token(tg_user_id, access_token)
-    notify_user(tg_user_id, "✅ Авторизация прошла успешно ✅\nВернись в бот и нажми «Меню» или /start")
+    try:
+        upsert_token(tg_user_id, access_token)
+    except Exception as e:
+        print("token save error:", repr(e))
+        raise HTTPException(status_code=500, detail='Token save failed')
+
+    try:
+        notify_user(tg_user_id, "✅ Авторизация прошла успешно ✅\nВернись в бот и нажми «Меню» или /start")
+    except Exception as e:
+        # Auth should still succeed even if Telegram notification fails.
+        print("notify error:", repr(e))
+
     return {"ok": True, "access_token": access_token, "token_type": "bearer"}
 
 

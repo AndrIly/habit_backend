@@ -2,6 +2,9 @@ from telebot import types
 from telebot.types import Message
 from loader import bot
 
+WEBAPP_URL = "https://habit-backend-awul.onrender.com/webapp"
+
+
 @bot.message_handler(commands=["start"])
 def start(message: Message):
     bot.set_chat_menu_button(
@@ -17,9 +20,14 @@ def start(message: Message):
                      '\t- Видеть, какие привычки выполнены, а какие пропущены.\n\n'
                      'Чтоб пользоватся ботом нужно авторизаваться')
     kb = types.InlineKeyboardMarkup()
-    kb.add(types.InlineKeyboardButton("🔐 Войти", callback_data="login_inline"))
+    kb.add(types.InlineKeyboardButton(
+        "🔐 Войти",
+        web_app=types.WebAppInfo(url=WEBAPP_URL)
+    ))
+    kb.add(types.InlineKeyboardButton("⚡ Быстрый вход", callback_data="login_inline"))
     bot.send_message(
         message.chat.id,
-        "Нажми кнопку «🔐 Войти» ниже для авторизации.",
+        "Нажми «🔐 Войти», чтобы открыть сайт. "
+        "Если нужен вход без сайта, нажми «⚡ Быстрый вход».",
         reply_markup=kb
     )
