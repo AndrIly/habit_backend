@@ -24,10 +24,8 @@ def start(message: Message):
         "🔐 Войти",
         web_app=types.WebAppInfo(url=WEBAPP_URL)
     ))
-    kb.add(types.InlineKeyboardButton("⚡ Быстрый вход", callback_data="login_inline"))
     bot.send_message(
         message.chat.id,
-        "Нажми «🔐 Войти», чтобы открыть сайт. "
-        "Если нужен вход без сайта, нажми «⚡ Быстрый вход».",
+        "Нажми «🔐 Войти», чтобы открыть сайт и авторизоваться.",
         reply_markup=kb
     )

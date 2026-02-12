@@ -133,11 +133,14 @@ def auth_telegram_webapp(payload: Dict = Body(...)):
         raise HTTPException(status_code=500, detail='Token save failed')
 
     try:
-        notify_user(tg_user_id, "✅ Авторизация прошла успешно ✅\nВернись в бот и нажми «Меню» или /start")
+        notify_user(tg_user_id, "✅Авторизация прошла успешно✅\n\n"
+                        "Главное меню:\n\n"
+                        "Привычки - показывает список привычек\n"
+                        "Сегодня - Отметить привычку сделанная или нет\n"
+                        "Добавить - добавить привычки\n"
+                        "Уведомление - настройка уведомлений",)
     except Exception as e:
-        # Auth should still succeed even if Telegram notification fails.
         print("notify error:", repr(e))
-
     return {"ok": True, "access_token": access_token, "token_type": "bearer"}
 
 
