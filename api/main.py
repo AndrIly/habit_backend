@@ -9,6 +9,14 @@ from database.init_db import init_db
 
 app = FastAPI()
 
+MAIN_MENU_MARKUP = {
+    "keyboard": [
+        [{"text": "📋Привычки📋"}, {"text": "✅Сегодня✅"}],
+        [{"text": "➕Добавить➕"}, {"text": "🔔Уведомление🔔"}],
+    ],
+    "resize_keyboard": True,
+}
+
 
 @app.on_event("startup")
 def on_startup():
@@ -138,7 +146,8 @@ def auth_telegram_webapp(payload: Dict = Body(...)):
                         "Привычки - показывает список привычек\n"
                         "Сегодня - Отметить привычку сделанная или нет\n"
                         "Добавить - добавить привычки\n"
-                        "Уведомление - настройка уведомлений",)
+                        "Уведомление - настройка уведомлений",
+                    reply_markup=MAIN_MENU_MARKUP)
     except Exception as e:
         print("notify error:", repr(e))
     return {"ok": True, "access_token": access_token, "token_type": "bearer"}

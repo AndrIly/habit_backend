@@ -16,10 +16,14 @@ def upsert_token(tg_user_id: int, access_token: str):
     conn.close()
 
 
-def notify_user(tg_user_id: int, text: str):
+def notify_user(tg_user_id: int, text: str, reply_markup: dict | None = None):
+    payload = {"chat_id": tg_user_id, "text": text}
+    if reply_markup is not None:
+        payload["reply_markup"] = reply_markup
+
     r = requests.post(
         f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-        json={"chat_id": tg_user_id, "text": text},
+        json=payload,
         timeout=10
     )
     r.raise_for_status()
