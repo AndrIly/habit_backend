@@ -1,6 +1,5 @@
 from . import webapp
 from . import add_habit
-from . import done
 from . import remind
 from . import today_habit
 from . import list_habit
