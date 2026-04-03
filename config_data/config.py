@@ -9,6 +9,7 @@ except Exception:
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 RAPID_API_KEY = os.getenv("RAPID_API_KEY")
 JWT_SECRET = os.getenv("JWT_SECRET")
+WEBAPP_URL = os.getenv("WEBAPP_URL", "https://habit-backend-awul.onrender.com/webapp")
 JWT_ALG = 'HS256'
 ACCESS_TOKEN_EXPIRATION = 60
 

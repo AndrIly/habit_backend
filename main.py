@@ -1,13 +1,16 @@
-from database import init_db
 from loader import bot
-import handlers
 from utils.set_bot_commands import set_default_commands
 from database.init_db import init_db
 from scheduler import start_scheduler
+import logging
 
 init_db()
 start_scheduler()
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 if __name__ == "__main__":
-   set_default_commands(bot)
-   bot.infinity_polling()
+       print("Starting bot...")
+       logger.info("Starting bot...")
+       set_default_commands(bot)
+       bot.infinity_polling()

@@ -1,8 +1,7 @@
 from telebot import types
 from telebot.types import Message
 from loader import bot
-
-WEBAPP_URL = "https://habit-backend-awul.onrender.com/webapp"
+from config_data.config import WEBAPP_URL
 
 
 @bot.message_handler(commands=["start"])
