@@ -4,8 +4,13 @@ from loader import bot
 from config_data.config import WEBAPP_URL
 
 
+@bot.callback_query_handler(func=lambda call: True)
+def debug_callback(call):
+    print("CALLBACK ARRIVED:", call.data)
+
 @bot.message_handler(commands=["start"])
 def start(message: Message):
+    print('Handler start')
     bot.set_chat_menu_button(
         chat_id=message.chat.id,
         menu_button=types.MenuButtonCommands(type='commands')
