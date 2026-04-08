@@ -1,4 +1,6 @@
 import json
+from loader import bot
+import telebot
 from fastapi import FastAPI, Body, HTTPException, Depends
 from starlette.responses import HTMLResponse
 from typing import Dict
@@ -6,6 +8,8 @@ from config_data.api_config import verify_telegram_init_data, create_access_toke
 from config_data.config import BOT_TOKEN
 from database.notify_user import notify_user, upsert_token
 from database.init_db import init_db
+
+
 
 app = FastAPI()
 
@@ -21,7 +25,6 @@ MAIN_MENU_MARKUP = {
 @app.on_event("startup")
 def on_startup():
     init_db()
-
 
 @app.get("/")
 def root():
