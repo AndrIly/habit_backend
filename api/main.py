@@ -8,8 +8,9 @@ from config_data.api_config import verify_telegram_init_data, create_access_toke
 from config_data.config import BOT_TOKEN
 from database.notify_user import notify_user, upsert_token
 from database.init_db import init_db
-
-
+import handlers
+from scheduler import start_scheduler
+from utils.set_bot_commands import set_default_commands
 
 app = FastAPI()
 
@@ -25,6 +26,23 @@ MAIN_MENU_MARKUP = {
 @app.on_event("startup")
 def on_startup():
     init_db()
+
+
+@app.on_event("startup")
+def on_startup():
+    init_db()
+    start_scheduler()
+    set_default_commands(bot)
+    print(bot.get_me())
+    print("Starting bot...")
+
+
+@app.post("/telegram/webhook")
+def telegram_webhook(update: dict):
+    print("WEBHOOK UPDATE ARRIVED:", update)
+    tg_update = telebot.types.Update.de_json(json.dumps(update))
+    bot.process_new_updates([tg_update])
+    return {"ok": True}
 
 @app.get("/")
 def root():
